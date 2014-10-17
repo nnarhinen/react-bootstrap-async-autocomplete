@@ -21,8 +21,9 @@
     "url": "https://github.com/nnarhinen/react-bootstrap-async-autocomplete/issues"
   },
   "dependencies": {
-    "react-bootstrap": "~0.12.0",
-    "react": "~0.11.2"
+    "bean": "^1.0.14",
+    "react": "~0.11.2",
+    "react-bootstrap": "~0.12.0"
   },
   "browserify": {
     "transform": [

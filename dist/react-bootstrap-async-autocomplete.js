@@ -4,6 +4,7 @@
 
 var AutocompleteFactory = function(
     React,
+    bean,
     Input,
     DropdownMenu,
     DropdownStateMixin,
@@ -14,6 +15,24 @@ var AutocompleteFactory = function(
       return {
         searchResults: []
       }
+    },
+    componentDidMount: function() {
+      var self = this;
+      //Listen to events outside component
+      bean.on(document, 'click.rbaac', function() {
+        self.setState({
+          showResults: false
+        });
+      });
+      bean.on(document, 'keyup.rbaac', function(ev) {
+        if (ev.keyCode !== 27) return;
+        self.setState({
+          showResults: false
+        });
+      });
+    },
+    componentWillUnmount: function() {
+      bean.off(document, '.rbaac');
     },
     showResults: function() {
       this.setState({
@@ -37,6 +56,7 @@ var AutocompleteFactory = function(
       var self = this;
       return function(ev) {
         ev.preventDefault();
+        ev.stopPropagation();
         self.props.onItemSelect && self.props.onItemSelect(self.state.searchResults[i]);
         self.setState({
           showResults: false
@@ -45,7 +65,7 @@ var AutocompleteFactory = function(
     },
     renderResults: function() {
       var self = this;
-      if (this.state.loading) return React.DOM.p(null, "Loading results..");
+      if (this.state.loading) return this.props.loadingContent || React.DOM.li(null, "Loading results..");
       return this.state.searchResults.map(function(one, i) {
         return MenuItem({key: i, onClick: self.searchResultClicked(i)}, self.props.itemContent ? self.props.itemContent(one) : one);
       });
@@ -69,6 +89,7 @@ var AutocompleteFactory = function(
 if (typeof module === 'object' && module.exports) {
   module.exports = AutocompleteFactory(
       require('react'),
+      require('bean'),
       require('react-bootstrap/Input'),
       require('react-bootstrap/DropdownMenu'),
       require('react-bootstrap/DropdownStateMixin'),
@@ -77,6 +98,7 @@ if (typeof module === 'object' && module.exports) {
   define(function(require) {
     return AutocompleteFactory(
         require('react'),
+        require('bean'),
         require('react-bootstrap/Input'),
         require('react-bootstrap/DropdownMenu'),
         require('react-bootstrap/DropdownStateMixin'),
@@ -85,6 +107,7 @@ if (typeof module === 'object' && module.exports) {
 } else {
   window.ReactBootstrapAsyncAutocomplete = AutocompleteFactory(
       window.React,
+      window.bean,
       window.ReactBootstrap.Input,
       window.ReactBootstrap.DropdownMenu,
       window.ReactBootstrap.DropdownStateMixin,
