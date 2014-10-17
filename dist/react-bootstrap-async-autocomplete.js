@@ -5,18 +5,20 @@
 var AutocompleteFactory = function(
     React,
     Input,
-    Popover,
-    OverlayTrigger,
-    ListGroup,
-    ListGroupItem) {
+    DropdownMenu,
+    DropdownStateMixin,
+    MenuItem) {
   return React.createClass({
+    mixins: [DropdownStateMixin],
     getInitialState: function() {
       return {
         searchResults: []
       }
     },
     showResults: function() {
-      this.refs.resultPopover.show();
+      this.setState({
+        showResults: true
+      });
     },
     handleTyping: function(ev) {
       var key = ev.target.value, self = this;
@@ -32,27 +34,33 @@ var AutocompleteFactory = function(
       }
     },
     searchResultClicked: function(i) {
-      this.props.onItemSelect && this.props.onItemSelect(this.state.searchResults[i]);
-      this.refs.resultPopover.hide();
+      var self = this;
+      return function(ev) {
+        ev.preventDefault();
+        self.props.onItemSelect && self.props.onItemSelect(self.state.searchResults[i]);
+        self.setState({
+          showResults: false
+        });
+      };
     },
     renderResults: function() {
       var self = this;
-      return (
-          Popover(null, 
-            this.state.loading ? React.DOM.p(null, "Loading..") : (
-            ListGroup(null, 
-             this.state.searchResults.map(function(one, i) {
-                return ListGroupItem({key: i, href: "#", onClick: self.searchResultClicked}, self.props.itemContent ? self.props.itemContent(one) : one);
-            }) 
-            )) 
-          )
-          );
+      if (this.state.loading) return React.DOM.p(null, "Loading results..");
+      return this.state.searchResults.map(function(one, i) {
+        return MenuItem({key: i, onClick: self.searchResultClicked(i)}, self.props.itemContent ? self.props.itemContent(one) : one);
+      });
     },
     render: function() {
+      var cls = 'dropdown';
+      if (this.state.showResults) cls += ' open';
       return (
-          OverlayTrigger({placement: "bottom", ref: "resultPopover", trigger: "manual", overlay: this.renderResults()}, 
-             this.transferPropsTo(Input({onChange: this.handleTyping, type: "text"})) 
-          )
+        React.DOM.div({className: cls}, 
+           this.transferPropsTo(Input({className: "dropdown-toggle", 
+                                        onChange: this.handleTyping, 
+                                        key: 0, 
+                                        type: "text"})), 
+          DropdownMenu({ref: "menu", key: 1}, this.renderResults())
+        )
           );
     }
   });
@@ -62,26 +70,23 @@ if (typeof module === 'object' && module.exports) {
   module.exports = AutocompleteFactory(
       require('react'),
       require('react-bootstrap/Input'),
-      require('react-bootstrap/Popover'),
-      require('react-bootstrap/OverlayTrigger'),
-      require('react-bootstrap/ListGroup'),
-      require('react-bootstrap/ListGroupItem'));
+      require('react-bootstrap/DropdownMenu'),
+      require('react-bootstrap/DropdownStateMixin'),
+      require('react-bootstrap/MenuItem'));
 } else if (typeof define === 'function' && define.amd) {
   define(function(require) {
     return AutocompleteFactory(
         require('react'),
         require('react-bootstrap/Input'),
-        require('react-bootstrap/Popover'),
-        require('react-bootstrap/OverlayTrigger'),
-        require('react-bootstrap/ListGroup'),
-        require('react-bootstrap/ListGroupItem'));
+        require('react-bootstrap/DropdownMenu'),
+        require('react-bootstrap/DropdownStateMixin'),
+        require('react-bootstrap/MenuItem'));
   });
 } else {
   window.ReactBootstrapAsyncAutocomplete = AutocompleteFactory(
       window.React,
       window.ReactBootstrap.Input,
-      window.ReactBootstrap.Popover,
-      window.ReactBootstrap.OverlayTrigger,
-      window.ReactBootstrap.ListGroup,
-      window.ReactBootstrap.ListGroupItem);
+      window.ReactBootstrap.DropdownMenu,
+      window.ReactBootstrap.DropdownStateMixin,
+      window.ReactBootstrap.MenuItem);
 }
