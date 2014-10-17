@@ -4,6 +4,7 @@ react-bootstrap-async-autocomplete
 An autocomplete input for react-bootstrap using an async datasource
 
 Live demo: http://cdn.rawgit.com/nnarhinen/react-bootstrap-async-autocomplete/master/example/index.html
+
 Source of demo: [example.js](example/example.js)
 
 Installation
@@ -33,7 +34,7 @@ var itemSelected = function(itm) {
 };
 
 //AutocompleteInput accepts all same props that react-bootstrap/Input
-React.renderComponent(<AutoComplete label="Some label" placeholder="Start typing.." onSearch={searchRequested} onItemSelect={itemSelected} />, document.body);
+React.renderComponent(<AutoCompleteInput label="Some label" placeholder="Start typing.." onSearch={searchRequested} onItemSelect={itemSelected} />, document.body);
 ```
 
 Author
