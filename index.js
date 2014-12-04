@@ -66,6 +66,7 @@ var AutocompleteFactory = function(
     renderResults: function() {
       var self = this;
       if (this.state.loading) return this.props.loadingContent || <li>Loading results..</li>;
+      if (!this.state.searchResults.length) return this.props.emptyContent || <li>No results.</li>;
       return this.state.searchResults.map(function(one, i) {
         return <MenuItem key={i} onClick={self.searchResultClicked(i)}>{self.props.itemContent ? self.props.itemContent(one) : one}</MenuItem>;
       });
