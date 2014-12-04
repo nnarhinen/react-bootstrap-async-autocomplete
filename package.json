@@ -1,6 +1,6 @@
 {
   "name": "react-bootstrap-async-autocomplete",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Async autocomplete component using react-bootstrap",
   "main": "index.js",
   "scripts": {
