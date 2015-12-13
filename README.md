@@ -16,7 +16,7 @@ Usage
 -----
 
 ```js
-var AutocompleteInput = require('react-bootstrap-async-autocomplete');
+var AutoCompleteInput = require('react-bootstrap-async-autocomplete');
     React = require('react');
 
 var searchRequested = function(key, cb) {
